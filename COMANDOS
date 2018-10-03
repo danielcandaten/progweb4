@@ -1,0 +1,21 @@
+COMANDOS DO GIT
+
+		git add --all
+
+		git commit -m "comentario do aruivo"
+
+envia aruivo    git push (SE DER ERRO, BAIXAR ARUIVOS ANTES)
+
+baixar aruivos  git pull
+
+
+
+COMANDOS DJANGO
+
+entra na pasta, digita 	DJANGODEV
+
+
+
+
+
+
