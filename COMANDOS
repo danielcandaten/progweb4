@@ -16,6 +16,19 @@ entra na pasta, digita 	DJANGODEV
 
 
 
+-- CRIA / atualiza banco de dados PYTHON
+
+python manage.py makemigrations
+python manage.py migrate
+
+--RODAR SERVIDOR seu burro
+python manage.py runserver
+
+
+
+
+
+
 
 
 
