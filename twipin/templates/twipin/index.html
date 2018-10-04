@@ -108,14 +108,22 @@
                   
                  var count = twips.lista.length
                  for (var c = 0; c < count; c++) {
-                    alert(twips.lista[c].texto)
+                    var id = twips.lista[c].id
+                    var texto = twips.lista[c].texto
+                    var usuario = twips.lista[c].autor
+                    addTwip(id,texto,usuario)
                  }
 
             });
             
             
        });
-
+       
+       function addTwip(id, texto, usuario){
+          var newTwip = $("#twipTemplate > div").clone(true).hide().prependTo("#feed");
+          $("#feed > div p").first().text(texto);
+          newTwip.fadeIn("slow");
+       }
 
        //Função que atualiza o número de Twips
        function atualizarContadorTwips() {
