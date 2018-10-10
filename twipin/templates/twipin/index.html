@@ -76,9 +76,21 @@
             $("#btnEnviar").on('click', function() {
                  var t = $("#mensagem").val();
                  $("#mensagem").val("").trigger("input").focus();
-                 addTwip(0,t,"fake");
-                 atualizarContadorTwips();
-                 return false;
+                 
+                 $.ajax({
+                    method: "POST",
+                    url: "/api/twips",
+                    data: {texto:t},
+                    })
+                    .done(function(data) {
+                       if (data["mensagem"] == "ok"){
+                          addTwip(0,t,"fake");
+                          atualizarContadorTwips();
+                       } else {
+                          alert( "Erro: " + data["mensagem"] );
+                       }
+                    });
+                    return false;
             });
 
             //Eventos do twipTemplate
@@ -100,9 +112,9 @@
 
             });
 
-            //TODO Fazer uma chamada para carregar todos os twips aqui
+            //Fazer uma chamada para carregar todos os twips aqui
             
-            $.getJSON( "/json/listartwips", function( twips ) {
+            $.getJSON( "/api/twips", function( twips ) {
                   
                  var count = twips.lista.length
                  for (var c = 0; c < count; c++) {
