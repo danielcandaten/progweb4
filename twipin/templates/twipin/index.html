@@ -26,13 +26,13 @@
                </div>
 
                <div id="twipTemplate" class="d-none">
-                  <div class="row mb-2 twip"  >
+                  <div class="row mb-2 twip" twipId="-1" >
                      <div class="col">
                         <div class="card">
                            <div class="card-body">
                               <h6 class="card-title"> John Doe <span class="username font-weight-light text-muted">@johndoereal</span></h6>
-                              <p>O mundo é grande e cabe nesta janela sobre o mar. O mar é grande e cabe na cama e no colchão de amar. O amor é grande e cabe no breve espaço de beijar.</p> 
-                              <a class="curtir mr-2" href="#"><i class="far fa-heart"></i> <span>0</span></a>
+                              <p class="texto">O mundo é grande e cabe nesta janela sobre o mar. O mar é grande e cabe na cama e no colchão de amar. O amor é grande e cabe no breve espaço de beijar.</p> 
+                              <a class="curtir mr-2" href="#"><i class="fas fa-heart"></i> <span>0</span></a>
                               <a class="excluir mr-2 float-right" href="#"><i class="far fa-trash-alt"> </i></a>
                            </div>
                         </div>
@@ -45,16 +45,6 @@
 
     <script>
 
-       var todosTwips = {
-           
-            lista: [
-                {usuario: "joaocabrito", nome: "João Paulo", mensagem: "Bom dia!"},
-                {usuario: "jucabala"   , nome: "Juca Bala" , mensagem: "Tiroteio na 21!"},
-                {usuario: "monica33"   , nome: "Mônica"    , mensagem: "Boa noite!"}
-            ] 
-
-       };
- 
        $(document).ready(function() {
             
             atualizarContadorTwips();
@@ -76,65 +66,99 @@
             $("#btnEnviar").on('click', function() {
                  var t = $("#mensagem").val();
                  $("#mensagem").val("").trigger("input").focus();
-                 
+
                  $.ajax({
-                    method: "POST",
-                    url: "/api/twips",
-                    data: {texto:t},
-                    })
-                    .done(function(data) {
-                       if (data["mensagem"] == "ok"){
-                          addTwip(0,t,"fake");
-                          atualizarContadorTwips();
-                       } else {
-                          alert( "Erro: " + data["mensagem"] );
-                       }
-                    });
-                    return false;
+                     method: "POST",
+                     url: "/api/twips",
+                     data: {texto: t}
+                 })
+                 .done(function(data) {
+                    if (data["mensagem"] == "ok") {
+                       id = data["id"]
+                       usuario = data["usuario"]
+                       addTwip(id, t, usuario,0,false);
+                       atualizarContadorTwips(); 
+                    } else {
+                       alert("Erro: "+data["mensagem"]);
+                    }
+                 });
+
+                 return false;
             });
 
             //Eventos do twipTemplate
             $("#twipTemplate a.curtir").on('click', function() {
-                 
-                 var c = $(this).find("span").text();
-                 //TODO Fazer chamada ajax aqui pra atualizar curtidas
-                 c++;
-                 $(this).find("span").text(c);
+
+                 id = $(this).closest("div.twip").attr("twipId");
+                 link = $(this)
+
+                 $.ajax({
+                     method: "POST",
+                     url: "/api/twips/" + id  +  "/coracao"
+                 })
+                 .done(function(data) {
+                    if (data["mensagem"] == "ok") {
+                       $(link).find("span").text(data["curtidas"]);
+                       $(link).find("i").addClass("gostei");
+                    } else {
+                       alert("Erro: "+data["mensagem"]);
+                    }
+
+                 });
                  return false;
 
             });
 
             $("#twipTemplate a.excluir").on('click', function() {
-                 //TODO Fazer chamada ajax aqui para remover
-                 $(this).closest("div.twip").remove();
-                 atualizarTwips();
+                 id = $(this).closest("div.twip").attr("twipId");
+                 twip = $(this)
+
+                 $.ajax({
+                     method: "DELETE",
+                     url: "/api/twips/" + id
+                 })
+                 .done(function(data) {
+                     $(twip).closest("div.twip").remove();
+                     atualizarContadorTwips();
+                 });
                  return false;
 
             });
 
             //Fazer uma chamada para carregar todos os twips aqui
-            
             $.getJSON( "/api/twips", function( twips ) {
                   
                  var count = twips.lista.length
                  for (var c = 0; c < count; c++) {
-                    var id = twips.lista[c].id
-                    var texto = twips.lista[c].texto
-                    var usuario = twips.lista[c].autor
-                    addTwip(id,texto,usuario)
+                     var id = twips.lista[c].id
+                     var texto = twips.lista[c].texto
+                     var usuario = twips.lista[c].autor
+                     var curtidas = twips.lista[c].curtidas
+                     var curtiu = twips.lista[c].curtiu
+                     addTwip(id,texto,usuario,curtidas,curtiu)
                  }
+                 atualizarContadorTwips();
 
             });
             
             
        });
-       //Adiciona twip
-       function addTwip(id, texto, usuario){
-          var newTwip = $("#twipTemplate > div").clone(true).hide().prependTo("#feed");
-          newTwip.find("span.username").text("@" + usuario);
-          $("#feed > div p").first().text(texto);
-          newTwip.fadeIn("slow");
+
+       //Adiciona um twip com os dados dos parâmetros
+       function addTwip(id, texto, usuario, curtidas,curtiu) {
+           var newTwip = $("#twipTemplate > div").clone(true).hide().prependTo("#feed");
+           newTwip.attr("twipId", id); 
+           newTwip.find("span.username").text("@" + usuario);
+           newTwip.find("p.texto").text(texto);
+           newTwip.find("a.curtir > span").text(curtidas);
+           if (curtiu==true) {
+               newTwip.find("a.curtir").addClass("curtiu");
+           } else {
+               newTwip.find("a.curtir").removeClass("curtiu");
+           }
+           newTwip.fadeIn("slow");
        }
+
 
        //Função que atualiza o número de Twips
        function atualizarContadorTwips() {
