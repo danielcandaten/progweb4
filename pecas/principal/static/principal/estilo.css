@@ -1,0 +1,58 @@
+@charset utf-8; 
+
+
+.header {
+ background-color: #fff;
+  height:20%;
+}
+
+/*Corpo da pagina */
+
+body  {
+  border-style: dotted;
+  height:100%;
+ background-color: #fff;
+ }
+
+.header{
+
+ }
+
+.menu{
+
+  width: 30%; 
+  height:100%;
+  float: left;
+ }
+
+.footer{
+  border-style: dotted;
+  width: 30%;
+  position:absolute;
+  bottom:0;
+  background-color: #cecece;
+  text-align: center; 
+ }
+
+.content {
+  border-style: dotted;
+  float: right;
+  width: 70%;
+ 
+
+ }
+
+
+
+
+p {
+ text-align: justify;
+ font-family: "sans-serif";
+ color: #F00; /* texto VERMELHO */
+ 
+}
+
+
+
+
+

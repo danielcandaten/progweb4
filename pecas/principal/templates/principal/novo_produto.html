@@ -1,0 +1,14 @@
+{% extends 'principal/base.html' %} 
+
+{% block content %}
+
+
+
+
+<form action="/principal/novo_produto" method="post">
+   {% csrf_token %}
+   {{ form.as_p }}
+   <input type="submit" value="Enviar post" />
+</form>
+
+{% endblock %}

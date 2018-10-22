@@ -1,0 +1,13 @@
+{% extends 'principal/base.html' %} 
+{% block content %}
+
+
+<form action="/principal/fazer_login/" method="post">
+   {% csrf_token %}
+   {{ form.as_p }}
+   <input type="submit" value="Fazer login" />
+</form>
+
+
+{% endblock %}
+

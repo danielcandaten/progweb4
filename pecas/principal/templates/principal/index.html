@@ -1,0 +1,63 @@
+{% extends 'principal/base.html' %} 
+{% load static %} 
+
+{% block content %}
+
+
+
+   <div class="header"> <!--inicia HEADER -->
+      <p>BEM VINDO AO SITE </p>
+   </div> <!--Finaliza HEADER -->
+
+ <!-- Testar a diferenca entre usuario e super usuario para cadastrar fornecedor e produto  -->
+
+
+
+   <div class="content"> <!--Inicia conteudo blog -->   
+      {% if user.is_authenticated == True %}  <!--Testa se esta autenticado -->  
+      <!--Mostra todos os fornecedores  -->
+      {% if lista_fornecedores %} 
+         <ul>
+
+          {% for f in lista_fornecedores %}
+             <td></principal/{{ f.id }}/><button type="button">{{ f.nome_fornecedor }}</button></td>
+             <!--Aqui precisa testar se nao tem produtos cadastrados no fornecedor para mostrar mensagem  -->
+             <table border="1px" border-style="dotted" >
+                 <tr align="center">
+                    <td>Produto</td>
+                    <td>Aplicacao</td> 
+                    {% if user.is_superuser %}
+                    <td>opcao</td>
+                    {% endif %}
+
+                 </tr>
+                    {% for p in f.produto_set.all %}
+                       <tr>
+                          <td>{{ p.nome_produto}}</td>
+                          <td>{{ p.aplicacao}}</td>
+                              {% if user.is_superuser %} 
+                              <td align="center"><a href="/principal/{{p.id}}/excluir/"><img src="{% static 'principal/excluir.gif' %}"></td>         
+                              {% endif %}
+                       </tr>
+                    {% endfor %}
+                 
+             </table>
+           {% endfor %}
+           </ul>
+      {% else%}
+         <p>Nenhum produto cadastrado.</p>
+      {% endif %}
+
+       </br></br></br></br></br></br></br></br></br></br></br></br></br></br></br></br>
+       <a href="/principal/novo_produto">CADASTRAR PRODUTO</a> 
+    
+    {% else %}
+    <a href="/principal/fazer_login">Login </a> <!--Se nao esta autenticado manda para o login -->
+    {% endif %}
+       
+    <!--FIM Login  -->
+
+   </div> <!--Finaliza CONTEUDO -->
+{% endblock %}
+   
+
